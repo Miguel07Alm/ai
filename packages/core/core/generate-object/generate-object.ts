@@ -1,11 +1,11 @@
-import { z } from 'zod';
 import {
   LanguageModelV1,
   LanguageModelV1CallWarning,
   LanguageModelV1FinishReason,
   NoTextGeneratedError,
-  safeParseJSON,
-} from '../../spec';
+} from '@ai-sdk/provider';
+import { safeParseJSON } from '@ai-sdk/provider-utils';
+import { z } from 'zod';
 import { TokenUsage, calculateTokenUsage } from '../generate-text/token-usage';
 import { CallSettings } from '../prompt/call-settings';
 import { convertToLanguageModelPrompt } from '../prompt/convert-to-language-model-prompt';

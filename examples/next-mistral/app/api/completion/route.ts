@@ -1,9 +1,5 @@
 import MistralClient from '@mistralai/mistralai';
-import {
-  MistralStream,
-  StreamingTextResponse,
-  experimental_StreamData,
-} from 'ai';
+import { MistralStream, StreamingTextResponse, StreamData } from 'ai';
 
 const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
 
@@ -21,7 +17,7 @@ export async function POST(req: Request) {
   });
 
   // optional: use stream data
-  const data = new experimental_StreamData();
+  const data = new StreamData();
 
   data.append({ test: 'value' });
 
@@ -30,7 +26,6 @@ export async function POST(req: Request) {
     onFinal(completion) {
       data.close();
     },
-    experimental_streamData: true,
   });
 
   // Respond with the stream

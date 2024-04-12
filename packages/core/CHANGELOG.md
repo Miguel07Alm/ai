@@ -1,5 +1,30 @@
 # ai
 
+## 3.0.22
+
+### Patch Changes
+
+- d544886: Breaking change: extract experimental AI core provider packages. They can now be imported with e.g. import { openai } from '@ai-sdk/openai' after adding them to a project.
+- ea6b0e1: Expose formatStreamPart, parseStreamPart, and readDataStream helpers.
+
+## 3.0.21
+
+### Patch Changes
+
+- 87d3db5: Extracted @ai-sdk/provider package
+- 8c40f8c: ai/core: Fix openai provider streamObject for gpt-4-turbo
+- 5cd29bd: ai/core: add toTextStreamResponse() method to streamText result
+
+## 3.0.20
+
+### Patch Changes
+
+- f42bbb5: Remove experimental from useAssistant and AssistantResponse.
+- 149fe26: Deprecate <Tokens/>
+- 2eb4b55: Remove experimental\_ prefix from StreamData.
+- e45fa96: Add stream support for Bedrock/Cohere.
+- a6b2500: Deprecated the `experimental_streamData: true` setting from AIStreamCallbacksAndOptions. You can delete occurrences in your code. The stream data protocol is now used by default.
+
 ## 3.0.19
 
 ### Patch Changes

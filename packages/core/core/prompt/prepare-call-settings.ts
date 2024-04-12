@@ -1,5 +1,5 @@
+import { InvalidArgumentError } from '@ai-sdk/provider';
 import { CallSettings } from './call-settings';
-import { InvalidArgumentError } from '../../spec';
 
 /**
  * Validates call settings and sets default values.

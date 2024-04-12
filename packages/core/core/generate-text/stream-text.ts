@@ -1,10 +1,12 @@
-import { LanguageModelV1FinishReason } from '../../spec';
-import { LanguageModelV1, LanguageModelV1CallWarning } from '../../spec/index';
+import {
+  LanguageModelV1,
+  LanguageModelV1CallWarning,
+  LanguageModelV1FinishReason,
+} from '@ai-sdk/provider';
 import {
   AIStreamCallbacksAndOptions,
   createCallbacksTransformer,
   createStreamDataTransformer,
-  readableFromAsyncIterable,
 } from '../../streams';
 import { CallSettings } from '../prompt/call-settings';
 import { convertToLanguageModelPrompt } from '../prompt/convert-to-language-model-prompt';
@@ -211,11 +213,34 @@ Stream callbacks that will be called when the stream emits events.
 @returns an `AIStream` object.
    */
   toAIStream(callbacks?: AIStreamCallbacksAndOptions) {
-    // TODO add support for tool calls
-    return readableFromAsyncIterable(this.textStream)
+    return this.textStream
       .pipeThrough(createCallbacksTransformer(callbacks))
-      .pipeThrough(
-        createStreamDataTransformer(callbacks?.experimental_streamData),
-      );
+      .pipeThrough(createStreamDataTransformer());
+  }
+
+  /**
+Creates a simple text stream response.
+Each text delta is encoded as UTF-8 and sent as a separate chunk.
+Non-text-delta events are ignored.
+   */
+  toTextStreamResponse(init?: ResponseInit): Response {
+    const encoder = new TextEncoder();
+    return new Response(
+      this.textStream.pipeThrough(
+        new TransformStream({
+          transform(chunk, controller) {
+            controller.enqueue(encoder.encode(chunk));
+          },
+        }),
+      ),
+      {
+        ...init,
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          ...init?.headers,
+        },
+      },
+    );
   }
 }
