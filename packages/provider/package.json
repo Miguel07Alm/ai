@@ -31,7 +31,7 @@
   "devDependencies": {
     "@types/json-schema": "7.0.15",
     "@types/node": "^18",
-    "@vercel/ai-tsconfig": "workspace:*",
+    "@vercel/ai-tsconfig": "0.0.0",
     "tsup": "^8",
     "typescript": "5.1.3"
   },
