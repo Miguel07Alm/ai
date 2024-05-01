@@ -159,27 +159,56 @@ const getStreamedResponse = async (
 
     return responseMessage;
   }
-
+const formData = new FormData();
+  let isFormData = false;
+  Object.entries({
+    data: chatRequest.data,
+    ...(extraMetadataRef.current.body instanceof FormData
+      ? { formData: extraMetadataRef.current.body }
+      : extraMetadataRef.current.body),
+    ...chatRequest.options?.body,
+    ...(chatRequest.functions !== undefined && {
+      functions: chatRequest.functions,
+    }),
+    ...(chatRequest.function_call !== undefined && {
+      function_call: chatRequest.function_call,
+    }),
+    ...(chatRequest.tools !== undefined && { tools: chatRequest.tools }),
+    ...(chatRequest.tool_choice !== undefined && {
+      tool_choice: chatRequest.tool_choice,
+    }),
+  }).forEach(([key, value]) => {
+    if (value instanceof FormData) {
+      isFormData = true;
+      value.forEach((entry, entryKey) => {
+        formData.append(entryKey, entry);
+      });
+    } else {
+      formData.append(key, JSON.stringify(value));
+    }
+  });
   return await callChatApi({
     api,
     messages: constructedMessagesPayload,
-    body: {
-      data: chatRequest.data,
-      ...extraMetadataRef.current.body,
-      ...chatRequest.options?.body,
-      ...(chatRequest.functions !== undefined && {
-        functions: chatRequest.functions,
-      }),
-      ...(chatRequest.function_call !== undefined && {
-        function_call: chatRequest.function_call,
-      }),
-      ...(chatRequest.tools !== undefined && {
-        tools: chatRequest.tools,
-      }),
-      ...(chatRequest.tool_choice !== undefined && {
-        tool_choice: chatRequest.tool_choice,
-      }),
-    },
+    body:  isFormData
+      ? { data: formData }
+      : {
+          data: chatRequest.data,
+          ...extraMetadataRef.current.body,
+          ...chatRequest.options?.body,
+          ...(chatRequest.functions !== undefined && {
+            functions: chatRequest.functions,
+          }),
+          ...(chatRequest.function_call !== undefined && {
+            function_call: chatRequest.function_call,
+          }),
+          ...(chatRequest.tools !== undefined && {
+            tools: chatRequest.tools,
+          }),
+          ...(chatRequest.tool_choice !== undefined && {
+            tool_choice: chatRequest.tool_choice,
+          }),
+        },
     streamMode,
     credentials: extraMetadataRef.current.credentials,
     headers: {

@@ -29,14 +29,20 @@ export async function callChatApi({
   onFinish?: (message: Message) => void;
   generateId: IdGenerator;
 }) {
+    if (body.data instanceof FormData) {
+    body.data.append('messages', JSON.stringify(messages));
+  }
+  const contentType = body.data instanceof FormData ? undefined : 'application/json';
   const response = await fetch(api, {
     method: 'POST',
-    body: JSON.stringify({
-      messages,
-      ...body,
-    }),
+    body: body.data instanceof FormData
+        ? (body.data as FormData)
+        : JSON.stringify({
+            messages,
+            ...body,
+          }),
     headers: {
-      'Content-Type': 'application/json',
+      ...(contentType && { 'Content-Type': contentType }),
       ...headers,
     },
     signal: abortController?.()?.signal,
