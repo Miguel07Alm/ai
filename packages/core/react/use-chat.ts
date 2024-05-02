@@ -159,7 +159,7 @@ const getStreamedResponse = async (
 
     return responseMessage;
   }
-const formData = new FormData();
+  const formData = new FormData();
   let isFormData = false;
   Object.entries({
     data: chatRequest.data,
@@ -190,7 +190,7 @@ const formData = new FormData();
   return await callChatApi({
     api,
     messages: constructedMessagesPayload,
-    body:  isFormData
+    body: isFormData
       ? { data: formData }
       : {
           data: chatRequest.data,
